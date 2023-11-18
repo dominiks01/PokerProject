@@ -4,8 +4,9 @@ from flask import Flask, request, send_file
 from PIL import Image
 import auth
 
+from credits import cluster
+
 app = Flask(__name__)
-cluster = ""
 client = MongoClient(cluster)
 
 

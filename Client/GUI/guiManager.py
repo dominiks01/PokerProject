@@ -10,6 +10,9 @@ from View.loginView import LoginView
 from Model.loginModel import LoginModel
 from Controler.loginController import LoginController
 from View.registerView import RegisterView
+from View.roomView import RoomView
+from Model.roomModel import RoomModel
+from Controler.roomController import RoomController
 
 import customtkinter
 
@@ -21,7 +24,7 @@ class GuiManager(customtkinter.CTk):
         self.controller = None
         self.model = None
         self.view = None
-        self.current_screen = ScreensEnum.LOGIN
+        self.current_screen = ScreensEnum.LOBBIES
         self.title('Tkinter MVC Demo')
 
         self.__lobby_id = None
@@ -62,4 +65,10 @@ class GuiManager(customtkinter.CTk):
             self.controller.initialize()
 
         if self.current_screen == ScreensEnum.ROOM:
-            return
+            self.__room_id = self.model.lobby_id
+            self.view = RoomView(self)
+            self.view.grid(row=0, column=0, padx=10, pady=10)
+            self.model = RoomModel(self.__room_id)
+            self.controller = RoomController(self.model, self.view, self.change_screen)
+            self.view.set_controller(self.controller)
+            self.controller.initialize()

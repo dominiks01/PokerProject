@@ -45,7 +45,10 @@ class LobbyView(ctk.CTkFrame):
         self.lobby_treeview.column("Description", width=250, anchor="center")
         self.lobby_treeview.column("Players", width=250, anchor="center")
         self.lobby_treeview.bind("<Double-1>", self.join_lobby_)
-
+        
+        print("huh?")
+        
+        
     def set_controller(self, controller):
         self.controller = controller
 

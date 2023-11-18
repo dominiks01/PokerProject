@@ -35,12 +35,8 @@ class RoomController:
         self.switch_scene(ScreensEnum.LOBBIES)
 
     def sort_by(self, value):
-        print(value, self.sort_by_)
-        if self.sort_by_ == value:
-            self.order = not self.order
-        else:
-            self.sort_by_ = value
-            self.order = False
+        self.order = not self.order if value == self.sort_by_ else self.order
+        self.sort_by_ = value
 
         for row in self.view.room_treeview.get_children():
             self.view.room_treeview.delete(row)

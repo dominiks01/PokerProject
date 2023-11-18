@@ -4,8 +4,36 @@ class LobbySocketWrapper:
     sio = socketio.Client()
 
     def __init__(self):
+        self.roomId = None
+        self.game_id = None
+        self.user_id = None
+        self.username = None
+        self.new_data = False
         self.call_backs()
+
         self.message_from_server = ""
+        
+    @user_id.setter
+    def user_id(self, value):
+        if True:
+            self.__user_id = value
+        else:
+            raise ValueError(f'User ID could not be setted: {value}')
+        
+    @property
+    def user_id(self):
+        return set.__user_id
+            
+    @username.setter
+    def username(self, value):
+        if True:
+            self.__username = value
+        else:
+            raise ValueError(f'username could not be setted: {value}')
+        
+    @property
+    def username(self):
+        return set.__username
         
     # Setup Connection
     def setup(self):
@@ -15,7 +43,7 @@ class LobbySocketWrapper:
         except Exception as ex:
             print("Failed to establish initial connection to server:", type(ex).__name__)
         self.call_backs()
-        
+
     def run(self):
         print(f"LobbySocket.run()")
         # self.setup()
@@ -23,15 +51,8 @@ class LobbySocketWrapper:
     def loop(self):
         self.sio.wait()
         
-    def send_lobbies_request(self):
-        print(f"lobbySocket.send_lobbies_request()")
+    
 
-        @self.sio.event
-        def send_lobbies_request_socket():
-            self.sio.emit('join_lobby', callback=self.set_lobbies_callback)
-
-        send_lobbies_request_socket()
-        
     def set_room_data(self, data):
         print(f"LobbySocket.set_room_data()")
         # self.room = data['room']
@@ -130,6 +151,15 @@ class LobbySocketWrapper:
 
         # self.roomId = None
         # leave_lobby_socket()
+
+    def send_lobbies_request(self):
+        print(f"lobbySocket.send_lobbies_request()")
+
+        # @self.sio.event
+        # def send_lobbies_request_socket():
+        #     self.sio.emit('join_lobby', callback=self.set_lobbies_callback)
+
+        # send_lobbies_request_socket()
 
     def start_game(self):
         print(f"lobbySocket.start_game()")

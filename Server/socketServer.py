@@ -2,69 +2,11 @@ import socketio
 import eventlet
 import sys
 
+from Lobbies.lobbies import Lobby
+
 sio = socketio.Server(async_mode='eventlet')
 app = socketio.WSGIApp(sio)
-
-lobbies_ = {
-            '1': {
-                'players': [
-                    {
-                        'username': 'test',
-                        'playerId': '1',
-                        'ready': True
-                    },
-                    {
-                        'username': 'test2',
-                        'playerId': '2',
-                        'ready': True
-                    }
-                ],
-                'maxPlayers': 4,
-                'startingMoney': 1000,
-                'bigBlind': 10,
-                'lobbyName': 'LobbyWith2Players',
-                'owner': 0
-            },
-            '2': {
-                'players': [
-                    {
-                        'username': 'test',
-                        'playerId': '3',
-                        'ready': True
-                    },
-                    {
-                        'username': 'test2',
-                        'playerId': '4',
-                        'ready': True
-                    },
-                    {
-                        'username': 'test3',
-                        'playerId': '5',
-                        'ready': True
-                    }
-                ],
-                'maxPlayers': 4,
-                'startingMoney': 1000,
-                'bigBlind': 10,
-                'lobbyName': 'LobbyWith3Players',
-                'owner': 0
-            },
-            '3': {
-                'players': [
-                    {
-                        'username': 'test',
-                        'playerId': '6',
-                        'ready': True
-                    }
-                ],
-                'maxPlayers': '6',
-                'startingMoney': 1000,
-                'bigBlind': 10,
-                'lobbyName': 'LobbyWith1Player',
-                'owner': 0
-            }
-        }
-
+lobby = Lobby()
 
 @sio.event
 def connect(sid, environ):
@@ -80,9 +22,8 @@ def disconnect(sid):
 @sio.on('join_lobby')
 def join_lobby(sid):
     print(f"SocketServer.join_lobby()")
-    print(lobbies_)
     sio.enter_room(sid, 'lobby')
-    return {'lobbies': lobbies_}
+    return {'lobbies': lobby.get_lobbies()}
 
 
 @sio.on('leave_game')
@@ -149,15 +90,34 @@ def room_change_ready(sid, data):
 @sio.on('join_room')
 def join_room(sid, data):
     print(f"SocketServer.join_room()")
-    # sio.enter_room(sid, data['roomId'])
-    # sio.leave_room(sid, 'lobby')
+    sio.enter_room(sid, data['room_id'])
+    sio.leave_room(sid, 'lobby')
+    
+    lobby.add_to_room(
+        data['room_id'],
+        data['username'],
+        data['player_id'],
+        False
+    )
+    
+    sio.emit('lobby_update', {'lobbies': lobby.get_lobbies()}, room='lobby')
+    sio.emit('room_update', {'room': lobby.get_room(data['room_id'])}, room=data['room_id'])
 
-    # Lobbies.join_room(data)
+    return {'status': 'success', 'room_id': data['room_id'], 'room':lobby.get_room(data['room_id'])}
 
-    # sio.emit('lobby_update', {'lobbies': Lobbies.lobbies}, room='lobby')
-    # sio.emit('room_update', {'room': Lobbies.lobbies[data['roomId']]}, room=data['roomId'])
-
-    # return {'status': 'success', 'roomId': data['roomId'], 'room': Lobbies.lobbies[data['roomId']]}
+@sio.on('leave_room')
+def leave_room(sid, data):
+    print(f"SocketServer.leave_room()")
+    sio.leave_room(sid, data['room_id'])
+    sio.enter_room(sid, 'lobby')
+    
+    lobby.remove_from_room(
+        data['room_id'],
+        data['player_id'],
+    )
+    
+    sio.emit('lobby_update', {'lobbies': lobby.get_lobbies()}, room='lobby')
+    sio.emit('room_update', {'room': lobby.get_room(data['room_id'])}, room=data['room_id'])
 
 
 # Game Management

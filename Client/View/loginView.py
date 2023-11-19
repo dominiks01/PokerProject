@@ -57,7 +57,9 @@ class LoginView(ctk.CTkFrame):
 
     def login_button_clicked(self):
         if self.controller:
-            self.controller.login(self.username_entry.get(), self.password_entry.get())
+            # self.controller.login(self.username_entry.get(), self.password_entry.get())
+            self.controller.login("dominiq123", "1234")
+
 
     def show_success(self, message):
         self.message_label['text'] = message

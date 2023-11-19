@@ -1,26 +1,43 @@
 from GUI.screensEnum import ScreensEnum
 
 class RoomController:
-    def __init__(self, model, view, change_scene):
+    def __init__(self, socket, model, view, change_scene):
         self.model = model
         self.view = view
         self.change_scene = change_scene
         self.sort_by_ = 0
         self.order = False
-
-    def join_room(self, lobby_id):
-        try:
-            self.model.room_id = lobby_id
-
-        except ValueError as error:
-            self.view.show_error(error)
+        self.socket = socket
 
     def initialize(self):
-        self.view.draw_room()
+        self.send_room_request()
+        self.view.draw_room(self.get_room())
+        
+    def send_room_request(self):
+        print(f"RC.send_room_request()")
+
+        @self.socket.sio.event
+        def send_room_request_socket():
+            
+            self.socket.sio.emit('join_room', {
+                'player_id': self.socket._id,
+                'room_id': self.socket.room_id, 
+                'player_name': self.socket.username, 
+                }, callback=self.set_room_callback)
+
+        send_room_request_socket()
+        
+    def set_room_callback(self, data):
+        if data['status'] == "success":
+            self.model.room = data['room']['players']
+            self.view.draw_room(self.get_room())    
+        else:
+            self.join_lobby()
+        # self.view.draw_lobby(self.get_lobbies()) 
 
     def get_room(self):
         try:
-            return sorted(self.model.room, key=lambda x: x[self.sort_by_], reverse=self.order)
+            return self.model.room
         except ValueError as error:
             self.view.show_error(error)
 

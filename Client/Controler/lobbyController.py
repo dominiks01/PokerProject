@@ -10,21 +10,39 @@ class LobbyController:
         self.sort_by_ = 0
         self.order = True
         
-        self.socket = socket
+        self.socket = socket        
 
     def initialize(self):
-        self.view.draw_lobby()
+        # self.socket.send_lobbies_request()
+        self.send_lobbies_request()
+        self.view.draw_lobby(self.get_lobbies())    
         
+    def send_lobbies_request(self):
+        print(f"LC.send_lobbies_request()")
 
+        @self.socket.sio.event
+        def send_lobbies_request_socket():
+            self.socket.sio.emit('join_lobby', callback=self.set_lobbies_callback)
+
+        send_lobbies_request_socket()
+        
+    def set_lobbies_callback(self, data):
+        self.model.lobby = data['lobbies']
+        self.view.draw_lobby(self.get_lobbies())    
+        
     def get_lobbies(self):
         try:
-            return sorted(self.model.lobby, key=lambda x: x[self.sort_by_], reverse=self.order)
+            # print(self.model.lobby)
+            # print(sorted(self.model.lobby, reverse=self.order))
+            # return sorted(self.model.lobby, reverse=self.order)
+            return self.model.lobby
         except ValueError as error:
             self.view.show_error(error)
 
     def join_lobby(self, value):
         try:
             self.model.lobby_id = value
+            self.socket.room_id = value
             self.join_room()
 
         except ValueError as error:
@@ -44,4 +62,4 @@ class LobbyController:
         for row in self.view.lobby_treeview.get_children():
             self.view.lobby_treeview.delete(row)
 
-        self.view.draw_lobby()
+        self.view.draw_lobby(self.get_lobbies())

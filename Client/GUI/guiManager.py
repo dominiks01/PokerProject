@@ -73,6 +73,6 @@ class GuiManager(customtkinter.CTk):
             self.view = RoomView(self)
             self.view.grid(row=0, column=0, padx=10, pady=10)
             self.model = RoomModel(self.__room_id)
-            self.controller = RoomController(self.model, self.view, self.change_screen)
+            self.controller = RoomController(self.__lobby_socket, self.model, self.view, self.change_screen)
             self.view.set_controller(self.controller)
             self.controller.initialize()

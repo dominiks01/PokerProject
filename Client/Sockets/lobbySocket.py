@@ -6,6 +6,11 @@ class LobbySocketWrapper:
     def __init__(self):
         self.call_backs()
         self.message_from_server = ""
+        self.setup()
+        
+        self._id = ""
+        self.username = ""
+        self.room_id = ""
         
     # Setup Connection
     def setup(self):
@@ -22,6 +27,9 @@ class LobbySocketWrapper:
 
     def loop(self):
         self.sio.wait()
+    
+    def disconnect(self):
+        self.sio.disconnect()
         
     def send_lobbies_request(self):
         print(f"lobbySocket.send_lobbies_request()")
@@ -44,8 +52,9 @@ class LobbySocketWrapper:
 
     def set_lobbies_callback(self, data):
         print(f"LobbySocket.set_lobbies_callback()")
-        # self.lobbies = data['lobbies']
-        # self.new_data = True
+        print(data)
+        self.lobbies = data
+        
 
     def call_backs(self):
         @self.sio.on('lobby_update')

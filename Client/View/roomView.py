@@ -43,9 +43,10 @@ class RoomView(ctk.CTkFrame):
     def sort_by(self, value):
         self.controller.sort_by(value)
 
-    def draw_room(self):
-        for player_index, item in  enumerate(self.controller.get_room()):
-            self.room_treeview.insert("", "end", values=(player_index+1, )+item)
+    def draw_room(self, lst):
+        for player_index, item in  enumerate(lst):
+            values = (item['username'], item['ready'])
+            self.room_treeview.insert("", "end", values=(player_index+1, )+values)
 
         self.room_treeview.pack(expand=True, fill="both")
 

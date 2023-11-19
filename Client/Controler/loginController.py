@@ -29,7 +29,7 @@ class LoginController:
             if data["status"] == "success":
                 print(data)
                 self.socket.username = data["user"]["username"]
-                self.socket.user_id = data["user"]["_id"]
+                self.socket._id = data["user"]["_id"]
                 self.switch_scene(ScreensEnum.LOBBIES)
             else:
                 raise Exception("Could not Log in")

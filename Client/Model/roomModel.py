@@ -4,7 +4,7 @@ import re
 class RoomModel:
     def __init__(self, room_id):
         self.room_id = room_id
-        self.room = []
+        self.room = {}
 
     @property
     def room_id(self):

@@ -35,11 +35,11 @@ class LobbyView(ctk.CTkFrame):
         style.map('Treeview', background=[('selected', "#333333"), ('active', "#333333")])
 
         self.lobby_treeview = ttk.Treeview(self.lobby_frame, columns=("", "Author", "Description","Starting Money", "Players"), padding=25)
-        self.lobby_treeview.heading("#1", text="Lobby ID", anchor="center", command= lambda i =0: self.sort_by(i))
-        self.lobby_treeview.heading("Author", text="Author", anchor="center", command=lambda i =1: self.sort_by(i))
-        self.lobby_treeview.heading("Description", text="Description", anchor="center", command=lambda i =2: self.sort_by(i))
-        self.lobby_treeview.heading("Starting Money", text="Starting Money", anchor="center", command=lambda i =2: self.sort_by(i))
-        self.lobby_treeview.heading("Players", text="Players", anchor="center", command=lambda i =4: self.sort_by(i))
+        self.lobby_treeview.heading("#1", text="Lobby ID", anchor="center", command= lambda _=0: self.sort_by(0))
+        self.lobby_treeview.heading("Author", text="Author", anchor="center", command=lambda _=0: self.sort_by("owner"))
+        self.lobby_treeview.heading("Description", text="Description", anchor="center", command=lambda _=0: self.sort_by("lobby_name"))
+        self.lobby_treeview.heading("Starting Money", text="Starting Money", anchor="center", command=lambda _=0: self.sort_by("starting_money"))
+        self.lobby_treeview.heading("Players", text="Players", anchor="center", command=lambda _=0: self.sort_by("max_players"))
         self.lobby_treeview.column("#0", width=0, anchor="center")
         self.lobby_treeview.column("#1", width=100, anchor="center")
         self.lobby_treeview.column("Author", width=200, anchor="center")
@@ -47,24 +47,22 @@ class LobbyView(ctk.CTkFrame):
         self.lobby_treeview.column("Starting Money", width=180, anchor="center")
         self.lobby_treeview.column("Players", width=100, anchor="center")
         self.lobby_treeview.bind("<Double-1>", self.join_lobby_)
+        self.lobby_treeview.grid(column=0, row=0)
         
         
     def set_controller(self, controller):
         self.controller = controller
 
     def draw_lobby(self, lst):
-        for lobby_id, (key, value) in enumerate(lst.items()):
-            
-            values = (key, 
-                      value['owner'], 
-                      value['lobby_name'],
-                      value['starting_money'], 
-                      value['max_players']
-                    )
+
+        for lobby_id, item in lst:
+            values = (lobby_id, 
+                    item['owner'], 
+                    item['lobby_name'],
+                    item['starting_money'], 
+                    item['max_players'])
             
             self.lobby_treeview.insert("", "end", values=values, tags=(values[0]))
-
-
         self.lobby_treeview.pack(expand=True, fill="both")
 
     def show_error(self, message):

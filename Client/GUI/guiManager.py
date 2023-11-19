@@ -28,12 +28,6 @@ class GuiManager(customtkinter.CTk):
         self.__game_socket = None
         self.current_screen = ScreensEnum.LOGIN
         self.title('Tkinter MVC Demo')
-
-        self.__lobby_id = None
-        self.__room_id = None
-        self.__user_id = None
-        self.__username = None
-
         self.load_screen()
 
 
@@ -63,7 +57,7 @@ class GuiManager(customtkinter.CTk):
         if self.current_screen == ScreensEnum.LOBBIES:
             self.view = LobbyView(self)
             self.view.grid(row=0, column=0, padx=10, pady=10)
-            self.model = LobbyModel(self.model.user_id)
+            self.model = LobbyModel(self.__lobby_socket._id)
             self.controller = LobbyController(self.__lobby_socket, self.model, self.view, self.change_screen)
             self.view.set_controller(self.controller)
             self.controller.initialize()

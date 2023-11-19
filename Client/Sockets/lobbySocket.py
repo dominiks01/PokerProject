@@ -57,12 +57,12 @@ class LobbySocketWrapper:
         
 
     def call_backs(self):
-        @self.sio.on('lobby_update')
-        def lobby_update(data):
-            print("lobbySocket.on('lobby_update')")
-            # self.lobbies = data['lobbies']
-            # self.new_data = True
-            # # self.set_lobbies_callback(data)
+        # @self.sio.on('lobby_update')
+        # def lobby_update(data):
+        #     print("lobbySocket.on('lobby_update')")
+        #     # self.lobbies = data['lobbies']
+        #     # self.new_data = True
+        #     # # self.set_lobbies_callback(data)
 
         @self.sio.on('room_update')
         def room_update(data):

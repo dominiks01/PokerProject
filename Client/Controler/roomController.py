@@ -22,10 +22,23 @@ class RoomController:
             self.socket.sio.emit('join_room', {
                 'player_id': self.socket._id,
                 'room_id': self.socket.room_id, 
-                'player_name': self.socket.username, 
+                'username': self.socket.username, 
                 }, callback=self.set_room_callback)
 
         send_room_request_socket()
+        
+    def leave_room(self):
+        print(f"RC.leave_room()")
+
+        @self.socket.sio.event
+        def leave_room_request():
+            
+            self.socket.sio.emit('leave_room', {
+                'player_id': self.socket._id,
+                'room_id': self.socket.room_id, 
+                })
+        leave_room_request()
+
         
     def set_room_callback(self, data):
         if data['status'] == "success":
@@ -37,7 +50,10 @@ class RoomController:
 
     def get_room(self):
         try:
-            return self.model.room
+            # x[1][self.sort_by_]
+            if self.sort_by_ == 0:
+                return self.model.room
+            return sorted(self.model.room, key=lambda x: x[self.sort_by_],  reverse=self.order)
         except ValueError as error:
             self.view.show_error(error)
 
@@ -49,6 +65,7 @@ class RoomController:
         self.switch_scene(ScreensEnum.ROOM)
 
     def join_lobby(self):
+        self.leave_room()
         self.switch_scene(ScreensEnum.LOBBIES)
 
     def sort_by(self, value):
@@ -58,4 +75,4 @@ class RoomController:
         for row in self.view.room_treeview.get_children():
             self.view.room_treeview.delete(row)
 
-        self.view.draw_room()
+        self.view.draw_room(self.get_room())

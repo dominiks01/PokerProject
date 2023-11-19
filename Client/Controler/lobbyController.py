@@ -6,17 +6,26 @@ class LobbyController:
         self.model = model
         self.view = view
         self.change_scene = change_scene
-
         self.sort_by_ = 0
         self.order = True
-        
         self.socket = socket        
+        self.call_back()
 
     def initialize(self):
-        # self.socket.send_lobbies_request()
         self.send_lobbies_request()
         self.view.draw_lobby(self.get_lobbies())    
         
+    def call_back(self):
+        @self.socket.sio.on('lobby_update')
+        def lobby_update(data):
+            print("lobbySocket.on('lobby_update')")
+            self.model.lobby = data['lobbies']
+            
+            for row in self.view.lobby_treeview.get_children():
+                self.view.lobby_treeview.delete(row)
+                
+            self.view.draw_lobby(self.get_lobbies())    
+
     def send_lobbies_request(self):
         print(f"LC.send_lobbies_request()")
 
@@ -32,10 +41,9 @@ class LobbyController:
         
     def get_lobbies(self):
         try:
-            # print(self.model.lobby)
-            # print(sorted(self.model.lobby, reverse=self.order))
-            # return sorted(self.model.lobby, reverse=self.order)
-            return self.model.lobby
+            if self.sort_by_ == 0:
+                return sorted(self.model.lobby.items(), reverse=self.order)
+            return sorted(self.model.lobby.items(), key=lambda x: x[1][self.sort_by_],  reverse=self.order)
         except ValueError as error:
             self.view.show_error(error)
 

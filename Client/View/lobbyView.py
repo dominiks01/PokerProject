@@ -13,7 +13,7 @@ class LobbyView(ctk.CTkFrame):
         self.controller = None
         self.clicked = None
 
-        self.lobby_frame = ctk.CTkFrame(self, fg_color="black")
+        self.lobby_frame = ctk.CTkFrame(self, width=500, height=500)
         self.lobby_frame.pack(expand=True, pady=40, padx=40, fill='both')
 
         style = ttk.Style()
@@ -30,9 +30,21 @@ class LobbyView(ctk.CTkFrame):
                         borderwidth=0.1,
                         font=(12))
 
-        style.layout("Treeview", [('Treeview.treearea', {'sticky': 'nswe'})])  # Remove the borders
+        style.layout("Treeview", [('Treeview.treearea', {'sticky': 'nswe'})])
         style.theme_use('default')
         style.map('Treeview', background=[('selected', "#333333"), ('active', "#333333")])
+
+        self.create_lobby_button = ctk.CTkButton(self.lobby_frame, width=200, text='create new lobby', command=self.create_lobby ,height=40)
+        self.create_lobby_button.grid(column=0, row=0, pady=(10,10))
+        
+        self.log_out = ctk.CTkButton(self.lobby_frame, text='log out', width=200 ,height=40, command=self.log_out)
+        self.log_out.grid(column=1, row=0, pady=(10,10))
+
+        self.show_profile = ctk.CTkButton(self.lobby_frame, text='go to profile', width=200 ,height=40, command=self.profile)
+        self.show_profile.grid(column=2, row=0, pady=(10,10))
+        
+        self.leaderboard = ctk.CTkButton(self.lobby_frame, text='show leaderboard', width=200 ,height=40, command=self.leaderboard)
+        self.leaderboard.grid(column=3, row=0, pady=(10,10))
 
         self.lobby_treeview = ttk.Treeview(self.lobby_frame, columns=("", "Author", "Description","Starting Money", "Players"), padding=25)
         self.lobby_treeview.heading("#1", text="Lobby ID", anchor="center", command= lambda _=0: self.sort_by(0))
@@ -47,7 +59,7 @@ class LobbyView(ctk.CTkFrame):
         self.lobby_treeview.column("Starting Money", width=180, anchor="center")
         self.lobby_treeview.column("Players", width=100, anchor="center")
         self.lobby_treeview.bind("<Double-1>", self.join_lobby_)
-        self.lobby_treeview.grid(column=0, row=0)
+        self.lobby_treeview.grid(column=0, row=1, columnspan=4)
         
         
     def set_controller(self, controller):
@@ -63,7 +75,7 @@ class LobbyView(ctk.CTkFrame):
                     item['max_players'])
             
             self.lobby_treeview.insert("", "end", values=values, tags=(values[0]))
-        self.lobby_treeview.pack(expand=True, fill="both")
+        # self.lobby_treeview.pack(expand=True, fill="both")
 
     def show_error(self, message):
        return
@@ -81,6 +93,22 @@ class LobbyView(ctk.CTkFrame):
         lobby_index = self.lobby_treeview.item(item, "tags")[0]
 
         self.controller.join_lobby(lobby_index)
+        
+    def create_lobby(self):
+        pass 
+    
+    def log_out(self):
+        pass
+    
+    def profile(self):
+        pass
+    
+    def leaderboard(self):
+        pass 
+    
+    def remove_lobby(self):
+        for row in self.lobby_treeview.get_children():
+            self.lobby_treeview.delete(row)
     
     def delete(self):
         self.pack_forget()

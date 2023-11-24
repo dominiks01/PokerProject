@@ -57,16 +57,17 @@ class GuiManager(customtkinter.CTk):
         if self.current_screen == ScreensEnum.LOBBIES:
             self.view = LobbyView(self)
             self.view.grid(row=0, column=0, padx=10, pady=10)
-            self.model = LobbyModel(self.__lobby_socket._id)
-            self.controller = LobbyController(self.__lobby_socket, self.model, self.view, self.change_screen)
+            self.model = LobbyModel(self.__lobby_socket)
+            self.controller = LobbyController(self.model, self.view, self.change_screen)
             self.view.set_controller(self.controller)
-            self.controller.initialize()
+            self.model.initialize()
 
         if self.current_screen == ScreensEnum.ROOM:
-            self.__room_id = self.model.lobby_id
             self.view = RoomView(self)
             self.view.grid(row=0, column=0, padx=10, pady=10)
-            self.model = RoomModel(self.__room_id)
-            self.controller = RoomController(self.__lobby_socket, self.model, self.view, self.change_screen)
+            self.model = RoomModel(self.__lobby_socket,)
+            self.controller = RoomController(self.model, self.view, self.change_screen)
             self.view.set_controller(self.controller)
-            self.controller.initialize()
+            self.model.initialize()
+            
+        

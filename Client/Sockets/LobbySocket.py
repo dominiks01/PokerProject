@@ -4,11 +4,10 @@ class LobbySocketWrapper:
     sio = socketio.Client()
 
     def __init__(self):
-        self.roomId = None
+        self.room_id = None
         self.game_id = None
         self.user_id = None
         self.username = None
-        self.new_data = False
         self.call_backs()
 
         self.message_from_server = ""

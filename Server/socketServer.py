@@ -20,7 +20,6 @@ def disconnect(sid):
     print(sid, 'disconnected')
 
 
-# Lobby Management
 @sio.on('join_lobby')
 def join_lobby(sid):
     print(f"SocketServer.join_lobby()")
@@ -47,36 +46,39 @@ def leave_game(sid, data):
 @sio.on('leave_lobby')
 def leave_lobby(sid, data):
     print("SocketServer.leave_lobby()")
-    # sio.leave_room(sid, 'lobby')
-    # sio.emit('lobby_update', {'lobbies': Lobbies.lobbies}, room='lobby')
+    sio.leave_room(sid, 'lobby')
+    sio.emit('lobby_update', {'lobbies': lobby.get_lobbies()}, room='lobby')
 
 
 # Room Management
 @sio.on('create_room')
 def create_room(sid, data):
     print("socketServer.create_room()")
-    # sio.leave_room(sid, 'lobby')
+    sio.leave_room(sid, 'lobby')
 
-    # lobbyId = Lobbies.create_room(data)
+    room_id = lobby.create_room(data)
 
-    # leave_lobby(sid, None)
-    # sio.enter_room(sid, lobbyId)
-    # sio.enter_room(sid, data['playerId'])
+    sio.enter_room(sid, str(room_id))
+    sio.enter_room(sid, data['player_id'])
 
-    # sio.emit('lobby_update', {'lobbies': Lobbies.lobbies}, room='lobby')
-    # return {'status': 'success', 'roomId': lobbyId, 'room': Lobbies.lobbies[lobbyId]}
+    sio.emit('lobby_update', {'lobbies': lobby.get_lobbies()}, room='lobby')
+    print(list(lobby.get_lobbies())) 
+    
+    return {'status': 'success', 
+            'room_id': room_id, 
+            'room': lobby.get_lobbies()}
 
 
 @sio.on('leave_room')
 def leave_room(sid, data):
     print("socketServer.leave_room()")
-    # sio.leave_room(sid, data['roomId'])
-    # sio.leave_room(sid, data['playerId'])
+    sio.leave_room(sid, data['room_id'])
+    sio.leave_room(sid, data['player_id'])
 
-    # Lobbies.leave_room(data)
+    lobby.leave_room(data)
 
-    # sio.enter_room(sid, 'lobby')
-    # sio.emit('lobby_update', {'lobbies': Lobbies.lobbies}, room='lobby')
+    sio.enter_room(sid, 'lobby')
+    sio.emit('lobby_update', {'lobbies': lobby.get_lobbies()}, room='lobby')
 
 
 @sio.on('room_change_ready')

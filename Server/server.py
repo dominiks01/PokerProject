@@ -40,6 +40,6 @@ def handle_register():
     return loginHandler.register(register_data, None)
 
 
-db = client.PokerProject
+db = client["PokerProject"]
 loginHandler = auth.AuthHandler(db)
 app.run(debug=True, port=5000, host='127.0.0.1')

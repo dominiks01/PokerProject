@@ -3,10 +3,10 @@ import socketio
 
 class CreateRoomModel:
     def __init__(self, socket):
-        self.lobby_name = ""
-        self.big_blind_value = ""
-        self.money_value = ""
-        self.max_players_value = ""
+        self.lobby_name = "None"
+        self.big_blind_value = "None"
+        self.money_value = "None"
+        self.max_players_value = "None"
         self.room_status = False
         
         self.socket = socket    

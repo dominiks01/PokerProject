@@ -1,7 +1,4 @@
-from requests import post
-
 from GUI.screensEnum import ScreensEnum
-URL = "http://127.0.0.1:5000"
 
 
 class RegisterController:
@@ -27,13 +24,8 @@ class RegisterController:
             self.model.email = email
             self.model.password = password
             self.model.repeat_password = repeat_password
-
-            r = post(URL + "/register", data={
-                "username": self.model.username,
-                "email": self.model.email,
-                "password": self.model.password
-            })
-
+            
+            self.model.register()
             self.login()
 
         except ValueError as error:

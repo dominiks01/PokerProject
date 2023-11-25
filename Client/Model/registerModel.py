@@ -1,4 +1,6 @@
 import re
+URL = "http://127.0.0.1:5000"
+from requests import post
 
 
 class RegisterModel:
@@ -62,3 +64,10 @@ class RegisterModel:
     def save(self):
         with open('emails.txt', 'a') as f:
             f.write(self.email + '\n')
+            
+    def register(self):
+        r = post(URL + "/register", data={
+                "username": self.username,
+                "email": self.email,
+                "password": self.password
+            })

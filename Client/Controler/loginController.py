@@ -27,7 +27,6 @@ class LoginController:
             data = r.json()
             
             if data["status"] == "success":
-                print(data)
                 self.socket.username = data["user"]["username"]
                 self.socket._id = data["user"]["_id"]
                 self.switch_scene(ScreensEnum.LOBBIES)

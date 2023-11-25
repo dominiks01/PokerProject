@@ -74,6 +74,7 @@ class LobbyModel:
         send_lobbies_request_socket()
         
     def set_lobbies_callback(self, data):
+        print(data)
         self.lobby = data['lobbies']
         self.notify()   
     

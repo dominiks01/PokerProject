@@ -65,8 +65,8 @@ class LobbyView(ctk.CTkFrame):
         self.controller = controller
 
     def draw_lobby(self, lst):
-
-        for lobby_id, item in lst:
+        print("LST",lst)
+        for lobby_id, item in enumerate(lst):
             values = (lobby_id, 
                     item['owner'], 
                     item['lobby_name'],

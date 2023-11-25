@@ -30,10 +30,12 @@ class AuthHandler:
             return {"status": "error", "message": "User not found"}
 
     def register(self, data, file=None):
-        # user = list(self.users.find({"$or": [{"name": data["userName"]}, {"email": data["email"]}]}))
         user = []
-        print(data)
-
+        cursor = self.users.find({})
+        
+        for document in cursor:
+            print(document)
+        
         if "@" not in data["email"]:
             print("Invalid email")
             return {"status": "error", "message": "Invalid email"}
@@ -45,7 +47,7 @@ class AuthHandler:
                 'username': data["username"],
                 'password': bcrypt.hashpw(data["password"].encode('utf-8'), bcrypt.gensalt()),
             }
-
+            
             self.users.insert_one(user)
             user = self.users.find_one({"username": data["username"]})
             del user['password']

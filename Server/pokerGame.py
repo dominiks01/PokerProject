@@ -6,8 +6,8 @@ from cardUtility import Deck
 from player import Player
 from pokerHand import PokerHand
 from tables import Table
+from credits import cluster
 
-cluster = ""
 client = MongoClient(cluster)
 
 class PokerGame(object):

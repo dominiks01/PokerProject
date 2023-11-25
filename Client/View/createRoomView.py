@@ -39,7 +39,7 @@ class CreateRoomView(ctk.CTkFrame):
         self.max_players = ctk.CTkEntry(
             self.create_room_frame, 
             width=250, 
-            ont=('Courier New', 15),
+            font=('Courier New', 15),
             placeholder_text="Max Players")
         self.max_players.pack(padx=25, pady=(0, 10))
 
@@ -65,12 +65,13 @@ class CreateRoomView(ctk.CTkFrame):
         self.controller.cancel()
         
     def create_room(self):
-        self.controller.create_room(
-            self.lobby_name_input.get(),
-            self.big_blind_input.get(),
-            self.money_input.get(),
-            self.max_players.get()
-        )
+        if self.controller:
+            self.controller.create_room(
+                self.lobby_name_input.get(),
+                self.big_blind_input.get(),
+                self.money_input.get(),
+                self.max_players.get()
+            )
 
     def delete(self):
         self.pack_forget()

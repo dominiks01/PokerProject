@@ -11,7 +11,6 @@ class RoomController:
 
     def get_room(self):
         try:
-            # x[1][self.sort_by_]
             if self.sort_by_ == 0:
                 return self.model.room
             return sorted(self.model.room, key=lambda x: x[self.sort_by_],  reverse=self.order)

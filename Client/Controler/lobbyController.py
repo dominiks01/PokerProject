@@ -12,9 +12,16 @@ class LobbyController:
         
     def get_lobbies(self):
         try:
-            if self.sort_by_ == 0:
-                return sorted(self.model.lobby.items(), reverse=self.order)
-            return sorted(self.model.lobby.items(), key=lambda x: x[1][self.sort_by_],  reverse=self.order)
+            match self.sort_by_:
+                case 0:
+                    return sorted(self.model.lobby,  key=lambda x: x['_id'], reverse=self.order)
+                case _: 
+                    return sorted(self.model.lobby,  key=lambda x: x[self.sort_by_], reverse=self.order)
+
+            
+            # if self.sort_by_ == 0:
+            #     return sorted(self.model.lobby,  key=lambda x: x['_id'], reverse=self.order)
+            # return sorted(self.model.lobby, key=lambda x: x[1][self.sort_by_],  reverse=self.order)
         except ValueError as error:
             self.view.show_error(error)
 

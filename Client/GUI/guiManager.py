@@ -33,7 +33,7 @@ class GuiManager(customtkinter.CTk):
         self.model = None
         self.view = None
         self.__client_socket = ClientSocketWrapper()
-        self.current_screen = ScreensEnum.LOBBIES
+        self.current_screen = ScreensEnum.LOGIN
         self.title('Tkinter MVC Demo')
         self.load_screen()
 

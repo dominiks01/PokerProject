@@ -52,7 +52,7 @@ class RoomView(ctk.CTkFrame):
         self.controller = controller
         
     def owner_view(self, is_owner):
-        if True:
+        if is_owner:
             self.owner_button = ctk.CTkButton(self.room_frame, text='Start game', command=self.start_game ,height=40, width=300)
             self.owner_button.grid(column=1, row=0, pady=(10,10))
     

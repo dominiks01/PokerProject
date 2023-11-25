@@ -32,6 +32,9 @@ class LobbyController:
 
     def join_room(self):
         self.switch_scene(ScreensEnum.ROOM)
+        
+    def create_lobby(self):
+        self.switch_scene(ScreensEnum.CREATE_ROOM)
 
     def sort_by(self, value):
         self.order = not self.order if value == self.sort_by_ else self.order

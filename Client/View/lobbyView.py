@@ -59,9 +59,8 @@ class LobbyView(ctk.CTkFrame):
         self.lobby_treeview.column("Starting Money", width=180, anchor="center")
         self.lobby_treeview.column("Players", width=100, anchor="center")
         self.lobby_treeview.bind("<Double-1>", self.join_lobby_)
-        self.lobby_treeview.grid(column=0, row=1, columnspan=4)
-        
-        
+        self.lobby_treeview.grid(column=0, row=1, columnspan=4)    
+    
     def set_controller(self, controller):
         self.controller = controller
 
@@ -95,7 +94,7 @@ class LobbyView(ctk.CTkFrame):
         self.controller.join_lobby(lobby_index)
         
     def create_lobby(self):
-        pass 
+        self.controller.create_lobby()
     
     def log_out(self):
         pass

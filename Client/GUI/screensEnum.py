@@ -10,3 +10,4 @@ class ScreensEnum(Enum):
     LEADERBOARD = 5
     GAME = 6
     ROOM = 7
+    CREATE_ROOM = 8

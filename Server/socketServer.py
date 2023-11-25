@@ -3,10 +3,12 @@ import eventlet
 import sys
 
 from Lobbies.lobbies import Lobby
+from Games.games import Game
 
 sio = socketio.Server(async_mode='eventlet')
 app = socketio.WSGIApp(sio)
 lobby = Lobby()
+game = Game()
 
 @sio.event
 def connect(sid, environ):
@@ -29,17 +31,17 @@ def join_lobby(sid):
 @sio.on('leave_game')
 def leave_game(sid, data):
     print("SocketServer.leave_game()")
-    # game_data = Games.player_left_game(data)
+    game_data = game.player_left_game(data)
 
-    # Lobbies.leave_room(data)
-    # sio.leave_room(sid, data['game_id'])
-    # sio.leave_room(sid, data['roomId'])
+    game.leave_room(data)
+    sio.leave_room(sid, data['game_id'])
+    sio.leave_room(sid, data['roomId'])
 
-    # if game_data['winner'] is not None:
-    #     sio.emit('finish_game', game_data, room=data['game_id'])
+    if game_data['winner'] is not None:
+        sio.emit('finish_game', game_data, room=data['game_id'])
 
-    # sio.emit('game_update', game_data, room= data['game_id'])
-    # sio.emit('lobby_update', {'lobbies':Lobbies.lobbies}, room='lobby')
+    sio.emit('game_update', game_data, room= data['game_id'])
+    sio.emit('lobby_update', {'lobbies':lobby.get_lobbies()}, room='lobby')
 
 
 @sio.on('leave_lobby')
@@ -125,37 +127,37 @@ def leave_room(sid, data):
 def create_live_game(sid, data):
     print("socketServer.create_live_game()")
 
-    # for player in Lobbies.lobbies[data['room_id']]['players']:
-    #     if player['ready'] is False:
-    #         return {'content': 'Players not ready!'}
+    for player in lobby.get_lobbies()[data['room_id']]['players']:
+        if player['ready'] is False:
+            return {'content': 'Players not ready!'}
 
-    # hash = Games.create_new_game(data)
-    # sio.emit('game_created', {'game_id': hash}, room=data['room_id'])
-    # return {'game_id': hash}
+    hash = game.create_new_game(data)
+    sio.emit('game_created', {'game_id': hash}, room=data['room_id'])
+    return {'game_id': hash}
 
 
 @sio.on('game_move_played')
 def update_data(sid, data):
     print("socketServer.game_move_played()")
-    # game_data = Games.update_data(data)
+    game_data = game.update_data(data)
 
-    # if game_data['winner'] is not None:
-    #     sio.emit('finish_game', game_data, room = data['gameId'])
+    if game_data['winner'] is not None:
+        sio.emit('finish_game', game_data, room = data['gameId'])
 
-    # sio.emit('game_update', game_data, room=data['gameId'])
-    # return game_data
+    sio.emit('game_update', game_data, room=data['gameId'])
+    return game_data
 
 
 @sio.on('room_start_game')
 def room_start_game(sid, data):
     print(f"SocketServer.room_start_game()")
-    # if True:
-    #     Games.games_lobbies[data['roomId']] = data['gameId']
-    #     Games.start_game(data['gameId'], Lobbies.lobbies[data['roomId']], data['roomId'])
+    if True:
+        game.games_lobbies[data['roomId']] = data['gameId']
+        game.start_game(data['gameId'], lobby.get_lobbies()[data['roomId']], data['roomId'])
 
-    #     sio.emit('room_game_start', {'content': 'The game has started!'}, room=data['roomId'])
-    #     sio.emit('next_round', room=data['gameId'])
-    #     sio.emit('lobby_update', { 'lobbies':Lobbies.lobbies}, room='lobby')
+        sio.emit('room_game_start', {'content': 'The game has started!'}, room=data['roomId'])
+        sio.emit('next_round', room=data['gameId'])
+        sio.emit('lobby_update', { 'lobbies':lobby.get_lobbies()}, room='lobby')
 
 # Info
 @sio.on('set_data')
@@ -181,9 +183,9 @@ def data_request(sid, data):
 @sio.on('start_round')
 def start_next_round(sid, data):
     print(f"SocketServer.start_round()")
-    # Games.play_next_round(data, Lobbies.lobbies[data['room_id']])
-    # sio.emit('next_round', room=data['game_id'])
-    # sio.emit('room_game_start', {'content': 'The game has started!'}, room=data['room_id'])
+    game.play_next_round(data, lobby.get_lobbies()[data['room_id']])
+    sio.emit('next_round', room=data['game_id'])
+    sio.emit('room_game_start', {'content': 'The game has started!'}, room=data['room_id'])
 
 
 eventlet.wsgi.server(eventlet.listen(('', 5500)), app)

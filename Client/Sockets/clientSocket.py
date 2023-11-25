@@ -1,6 +1,6 @@
 import socketio
 
-class LobbySocketWrapper:
+class ClientSocketWrapper:
     sio = socketio.Client()
 
     def __init__(self):

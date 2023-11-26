@@ -2,26 +2,26 @@ import tkinter as tk
 import sys
 sys.path.append("./..")
 
-from Controler.lobbyController import LobbyController
-from Controler.registerController import RegisterController
+from Lobby.lobbyController import LobbyController
+from Register.registerController import RegisterController
 from GUI.screensEnum import ScreensEnum
-from Model.lobbyModel import LobbyModel
-from Model.registerModel import RegisterModel
-from View.lobbyView import LobbyView
-from View.loginView import LoginView
-from Model.loginModel import LoginModel
-from Controler.loginController import LoginController
-from View.registerView import RegisterView
-from View.roomView import RoomView
-from Model.roomModel import RoomModel
-from Controler.roomController import RoomController
+from Lobby.lobbyModel import LobbyModel
+from Register.registerModel import RegisterModel
+from Lobby.lobbyView import LobbyView
+from Login.loginView import LoginView
+from Login.loginModel import LoginModel
+from Login.loginController import LoginController
+from Register.registerView import RegisterView
+from Room.roomView import RoomView
+from Room.roomModel import RoomModel
+from Room.roomController import RoomController
 from Sockets.clientSocket import ClientSocketWrapper
-from View.gameView import GameView
-from Model.gameModel import GameModel
-from Controler.gameController import GameController
-from View.createRoomView import CreateRoomView
-from Model.createRoomModel import CreateRoomModel
-from Controler.createRoomController import CreateRoomController
+from Game.gameView import GameView
+from Game.gameModel import GameModel
+from Game.gameController import GameController
+from NewRoom.createRoomView import CreateRoomView
+from NewRoom.createRoomModel import CreateRoomModel
+from NewRoom.createRoomController import CreateRoomController
 
 import customtkinter
 
@@ -57,7 +57,7 @@ class GuiManager(customtkinter.CTk):
         if self.current_screen == ScreensEnum.REGISTER:
             self.view = RegisterView(self)
             self.view.grid(row=0, column=0, padx=10, pady=10)
-            self.model = RegisterModel("dominikszot@gmail.com")
+            self.model = RegisterModel()
             self.controller = RegisterController(self.model, self.view, self.change_screen)
             self.view.set_controller(self.controller)
 

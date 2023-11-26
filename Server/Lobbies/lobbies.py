@@ -1,6 +1,7 @@
 from credits import cluster
 from pymongo import MongoClient
 import random
+from bson.objectid import ObjectId
 
 class Lobby:
     def __init__(self):
@@ -14,23 +15,28 @@ class Lobby:
         for docs in result:
             docs["_id"] = str(docs["_id"])
                 
-        print(result)
         return result
     
     def remove_from_room(self):
         return
     
-    def add_to_room(self, room_id: str, 
-                    username: str, 
-                    player_id: str, 
-                    ready:bool = False):
-        pass
+    def add_to_room(
+        self,
+        room_id: str, 
+        username: str, 
+        player_id: str, 
+        ready:bool = False):
         
-        # self.lobbies_[room_id]['players'].append({
-        #     'username': username,
-        #     'player_id': player_id,
-        #     'ready': ready     
-        # })
+        self.lobbies_.update_one({
+            '_id': ObjectId(str(room_id))}, 
+            {'$push': {
+                "players":{
+                    'username': username, 
+                    'ready': ready, 
+                    'player_id': player_id
+                } 
+            }
+        })
         
     def create_room(self, data):
         lobby_id = self.lobbies_.insert_one({
@@ -51,5 +57,8 @@ class Lobby:
         self.lobbies_[room_id]['players'] = [player for player in self.lobbies_[room_id]['players'] if not player['player_id'] == player_id]
 
     def get_room(self, lobby_id: str):
-        return self.lobbies_[lobby_id]
+        result = list(self.lobbies_.find({'_id': ObjectId(str(lobby_id))}))
+        result[0]["_id"] = str(result[0]["_id"])
+                
+        return result[0]
     

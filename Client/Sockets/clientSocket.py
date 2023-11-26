@@ -29,7 +29,23 @@ class ClientSocketWrapper:
         self.sio.wait()
     
     def disconnect(self):
+        print("disconnecting!")
+        if self.room_id is not None:
+            self.leave_room()
+        
         self.sio.disconnect()
+        
+    def leave_room(self):
+        print(f"RM.leave_room()")
+
+        @self.socket.sio.event
+        def leave_room_request():
+            
+            self.socket.sio.emit('leave_room', {
+                'player_id': self._id,
+                'room_id': self.room_id, 
+                })
+        leave_room_request()
         
     def send_lobbies_request(self):
         print(f"lobbySocket.send_lobbies_request()")

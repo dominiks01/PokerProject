@@ -20,6 +20,21 @@ class Lobby:
     def remove_from_room(self):
         return
     
+    def change_ready(self, data):
+        result = list(self.lobbies_.find({'_id': ObjectId(str(data["room_id"]))}))[0]['players']
+        
+        for dict_element in result:
+            if dict_element["player_id"] == data["player_id"]:
+                dict_element["ready"] = not bool(dict_element["ready"])
+                
+        self.lobbies_.update_one(
+            {'_id': ObjectId(str(data["room_id"]))}, 
+            { "$set": {
+                "players" : result
+            }}
+        )
+        
+
     def add_to_room(
         self,
         room_id: str, 
@@ -27,18 +42,24 @@ class Lobby:
         player_id: str, 
         ready:bool = False):
         
+        result = list(self.lobbies_.find({'_id': ObjectId(str(room_id))}))[0]['players']
+        
+        player_ = {
+            'username': username, 
+            'ready': ready, 
+            'player_id': player_id
+        }
+        
+        if player_ in result:
+            print("Player Already in lobby!")
+            return
+        
         self.lobbies_.update_one({
             '_id': ObjectId(str(room_id))}, 
-            {'$push': {
-                "players":{
-                    'username': username, 
-                    'ready': ready, 
-                    'player_id': player_id
-                } 
-            }
+            {'$push': { "players": player_}
         })
         
-    def create_room(self, data):
+    def create_room(self, data):        
         lobby_id = self.lobbies_.insert_one({
             'players'           :[{
                 'username': data['player_username'], 

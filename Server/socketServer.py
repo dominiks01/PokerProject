@@ -18,7 +18,7 @@ def connect(sid, environ):
 @sio.event
 def disconnect(sid):
     print(sid, 'disconnected')
-
+    
 
 @sio.on('join_lobby')
 def join_lobby(sid):
@@ -34,7 +34,7 @@ def leave_game(sid, data):
 
     game.leave_room(data)
     sio.leave_room(sid, data['game_id'])
-    sio.leave_room(sid, data['roomId'])
+    sio.leave_room(sid, data['room_id'])
 
     if game_data['winner'] is not None:
         sio.emit('finish_game', game_data, room=data['game_id'])
@@ -84,12 +84,12 @@ def leave_room(sid, data):
 @sio.on('room_change_ready')
 def room_change_ready(sid, data):
     print(f"SocketServer.room_change_ready()")
-    # Lobbies.change_ready(data)
+    lobby.change_ready(data)
 
-    # sio.emit('room_update', {'room': Lobbies.lobbies[data['roomId']]}, room=data['roomId'])
-    # sio.emit('lobby_update', {'lobbies': Lobbies.lobbies}, room='lobby')
+    sio.emit('room_update', {'room': lobby.get_room(data['room_id'])}, room=data['room_id'])
+    sio.emit('lobby_update', {'lobbies': lobby.get_lobbies()}, room='lobby')
 
-    # return { 'room': Lobbies.lobbies[data['roomId']]}
+    return { 'status': "success", 'room': lobby.get_room(data['room_id'])}
 
 @sio.on('join_room')
 def join_room(sid, data):

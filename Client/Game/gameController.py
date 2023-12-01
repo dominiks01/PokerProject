@@ -2,11 +2,15 @@ from GUI.screensEnum import ScreensEnum
 import time
 
 class GameController:
-    def __init__(self, model, view, change_scene):
+    def __init__(self, socket, model, view, change_scene):
+        self.socket = socket
         self.model = model
         self.view = view
         self.change_scene = change_scene
-        self.model.attach(self)
+        self.socket.attach(self)
+        
+    def initialize(self):
+        self.socket.attach(self)
         
     def switch_scene(self, ScreensEnum):
         self.view.delete()

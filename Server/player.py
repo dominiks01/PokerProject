@@ -37,11 +37,11 @@ class Player:
         self.stack += amount
 
     def bet_chips(self, bet):
-        if self.stack <= bet:
-            bet = self.stack
-        self.stack -= bet
-        self.stake += bet
-
+        if int(self.stack) <= int(bet):
+            bet = int(self.stack)
+        self.stack = int(self.stack) - int(bet)
+        self.stake += int(bet)
+        
         return bet
 
     def get_cards(self):

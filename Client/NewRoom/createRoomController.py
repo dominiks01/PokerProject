@@ -15,7 +15,14 @@ class CreateRoomController:
             self.model.money_value = money_value
             self.model.max_players_value = max_players_value
             
-            self.model.create_room()
+            self.socket.create_room(
+                {
+                    "lobby_name": self.model.lobby_name, 
+                    "max_players": self.model.max_players_value, 
+                    "big_blind": self.model.big_blind_value, 
+                    "starting_money": self.model.money_value
+                }
+            )
         
         except ValueError as error:
             self.view.show_error(error)

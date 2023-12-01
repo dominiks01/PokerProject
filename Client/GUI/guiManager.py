@@ -22,6 +22,7 @@ from Game.gameController import GameController
 from NewRoom.createRoomView import CreateRoomView
 from NewRoom.createRoomModel import CreateRoomModel
 from NewRoom.createRoomController import CreateRoomController
+from Sockets.gameSocket import GameSocketWrapper
 
 import customtkinter
 
@@ -64,31 +65,36 @@ class GuiManager(customtkinter.CTk):
         if self.current_screen == ScreensEnum.LOBBIES:
             self.view = LobbyView(self)
             self.view.grid(row=0, column=0, padx=10, pady=10)
-            self.model = LobbyModel(self.__client_socket)
-            self.controller = LobbyController(self.model, self.view, self.change_screen)
+            self.model = LobbyModel()
+            self.controller = LobbyController(self.__client_socket, self.model, self.view, self.change_screen)
             self.view.set_controller(self.controller)
-            self.model.initialize()
+            self.controller.initialize()
 
         if self.current_screen == ScreensEnum.ROOM:
             self.view = RoomView(self)
             self.view.grid(row=0, column=0, padx=10, pady=10)
-            self.model = RoomModel(self.__client_socket,)
-            self.controller = RoomController(self.model, self.view, self.change_screen)
+            self.model = RoomModel()
+            self.controller = RoomController(self.__client_socket,self.model, self.view, self.change_screen)
             self.view.set_controller(self.controller)
-            self.model.initialize()
+            self.controller.initialize()
             
         if self.current_screen == ScreensEnum.CREATE_ROOM:
             self.view = CreateRoomView(self)
             self.view.grid(row=0, column=0, padx=10, pady=10)
-            self.model = CreateRoomModel(self.__client_socket)
-            self.controller = CreateRoomController(self.model, self.view, self.change_screen)
+            self.model = CreateRoomModel()
+            self.controller = CreateRoomController(self.__client_socket, self.model, self.view, self.change_screen)
             self.view.set_controller(self.controller)
-            self.model.initialize()
+            self.controller.initialize()
             
         if self.current_screen == ScreensEnum.GAME:
             self.view = GameView(self)
             self.view.grid(row=0, column=0, padx=10, pady=10)
-            self.model = GameModel(self.__client_socket)
-            self.controller = GameController(self.model, self.view, self.change_screen)
+            self.model = GameModel()
+            self.controller = GameController(
+                self.__client_socket,
+                self.model, 
+                self.view, 
+                self.change_screen
+                )
             self.view.set_controller(self.controller)
-            self.model.initialize()
+            self.controller.initialize()

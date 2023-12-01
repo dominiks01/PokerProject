@@ -3,8 +3,7 @@ import socketio
 
 
 class LeaderboardModel:
-    def __init__(self, socket):
-        self.socket = socket    
+    def __init__(self):
         self._observers = []    
         
         self.call_back()

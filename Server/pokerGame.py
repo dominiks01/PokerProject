@@ -31,17 +31,19 @@ class PokerGame(object):
         self.db = client['PokerUsers']
 
     def config(self, settings):
-        self.starting_money = settings['startingMoney']
-        self.big_blind = settings['bigBlind']
-        self.small_blind = int(self.big_blind * 0.5)
+        self.starting_money = settings['starting_money']
+        self.big_blind = settings['big_blind']
+        print(self.big_blind)
+
+        self.small_blind = int(self.big_blind)//2
         self.owner = settings['owner']
 
         if self.tables is None:
             self.tables = Table()
 
         for player in settings['players']:
-            if player['playerId'] not in self.tables.players:
-                self.tables.sitdown(Player(player['username'], player['playerId'], self.starting_money))
+            if player['player_id'] not in self.tables.players:
+                self.tables.sitdown(Player(player['username'], player['player_id'], self.starting_money))
 
     def _player_left_game(self, uuid):
         self.tables.player_left(uuid)
@@ -49,7 +51,7 @@ class PokerGame(object):
     def transfer_chips(self, uuid, amout, player=False):
         if player is False:
             chips = self.tables.players[uuid].bet_chips(amout)
-            self.game_pot += chips
+            self.game_pot += int(chips)
         else:
             self.tables.players[uuid].add_chips(self.game_pot)
             self.game_pot = 0
@@ -194,7 +196,7 @@ class PokerGame(object):
         self.transfer_chips(self.winner, self.game_pot, True)
 
         self.db['scores'].insert_one({
-            "userId": i.uuid,
+            "user_id": i.uuid,
             "score": user_score,
             "username": i.name,
             'timestamp': datetime.utcnow()

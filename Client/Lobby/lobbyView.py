@@ -84,15 +84,8 @@ class LobbyView(ctk.CTkFrame):
         """
         self.lobby_treeview = ttk.Treeview(
             self.lobby_frame,
-            columns=("", "Author", "Description", "Starting Money", "Players"),
+            columns=("Author", "Description", "Starting Money", "Players"),
             padding=25,
-        )
-
-        self.lobby_treeview.heading(
-            column="#1",
-            text="Lobby ID",
-            anchor="center",
-            command=lambda _=0: self.sort_by("_id"),
         )
 
         self.lobby_treeview.heading(
@@ -127,7 +120,6 @@ class LobbyView(ctk.CTkFrame):
             Treeview columns configuration
         """
         self.lobby_treeview.column(column="#0", width=0, anchor="center")
-        self.lobby_treeview.column(column="#1", width=100, anchor="center")
         self.lobby_treeview.column(column="Author", width=200, anchor="center")
         self.lobby_treeview.column(column="Description", width=250, anchor="center")
         self.lobby_treeview.column(column="Starting Money", width=180, anchor="center")
@@ -140,9 +132,8 @@ class LobbyView(ctk.CTkFrame):
 
     def draw_lobby(self, lst):
         print("LST", lst)
-        for lobby_id, item in enumerate(lst):
+        for item in lst:
             values = (
-                lobby_id,
                 item["owner"],
                 item["lobby_name"],
                 item["starting_money"],
@@ -150,7 +141,6 @@ class LobbyView(ctk.CTkFrame):
             )
 
             self.lobby_treeview.insert("", "end", values=values, tags=(item["_id"]))
-        # self.lobby_treeview.pack(expand=True, fill="both")
 
     def show_error(self, message):
         return

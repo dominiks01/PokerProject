@@ -2,13 +2,22 @@ from GUI.screensEnum import ScreensEnum
 import time
 
 class LobbyController:
-    def __init__(self, model, view, change_scene):
+    def __init__(self, socket, model, view, change_scene):
+        self.socket = socket
         self.model = model
         self.view = view
         self.change_scene = change_scene
         self.sort_by_ = "_id"
-        self.order = True
-        self.model.attach(self)
+        self.order = True        
+        
+    def initialize(self):
+        self.socket.attach(self)
+        self.model.lobby = self.socket.send_lobbies_request()['lobbies']
+        
+    def update(self):
+        self.model.lobby = self.socket.lobbies['lobbies']
+        self.view.remove_lobby()
+        self.view.draw_lobby(self.get_lobbies())
         
     def get_lobbies(self):
         try:
@@ -19,7 +28,7 @@ class LobbyController:
 
     def join_lobby(self, value):
         try:
-            self.model.join_room(value)
+            self.socket.room_id = value
             self.join_room()
 
         except ValueError as error:
@@ -27,6 +36,7 @@ class LobbyController:
 
     def switch_scene(self, ScreensEnum):
         self.view.delete()
+        self.socket.deattach(self)
         self.change_scene(ScreensEnum)
 
     def join_room(self):
@@ -36,6 +46,7 @@ class LobbyController:
         self.switch_scene(ScreensEnum.CREATE_ROOM)
         
     def log_out(self):
+        self.socket.leave_lobby()
         self.switch_scene(ScreensEnum.LOGIN)
         
     def profile(self):
@@ -51,7 +62,4 @@ class LobbyController:
         self.view.remove_lobby()
         self.view.draw_lobby(self.get_lobbies())
         
-    def update(self):
-        self.view.remove_lobby()
-        self.view.draw_lobby(self.get_lobbies())
         

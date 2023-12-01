@@ -64,9 +64,10 @@ def create_room(sid, data):
     sio.emit('lobby_update', {'lobbies': lobby.get_lobbies()}, room='lobby')
     print(list(lobby.get_lobbies())) 
     
-    return {'status': 'success', 
-            'room_id': room_id, 
-            'room': lobby.get_lobbies()}
+    return {
+        'status': 'success', 
+        'room_id': room_id, 
+        'room': lobby.get_lobbies()}
 
 
 @sio.on('leave_room')
@@ -122,6 +123,8 @@ def leave_room(sid, data):
     
     sio.emit('lobby_update', {'lobbies': lobby.get_lobbies()}, room='lobby')
     sio.emit('room_update', {'room': lobby.get_room(data['room_id'])}, room=data['room_id'])
+    
+    return {'status': "success"}
 
 
 # Game Management
@@ -129,9 +132,9 @@ def leave_room(sid, data):
 def create_live_game(sid, data):
     print("socketServer.create_live_game()")
 
-    for player in lobby.get_lobbies()[data['room_id']]['players']:
-        if player['ready'] is False:
-            return {'content': 'Players not ready!'}
+    # for player in lobby.get_lobbies()[data['room_id']]['players']:
+    #     if player['ready'] is False:
+    #         return {'content': 'Players not ready!'}
 
     hash = game.create_new_game(data)
     sio.emit('game_created', {'game_id': hash}, room=data['room_id'])
@@ -152,13 +155,13 @@ def update_data(sid, data):
 
 @sio.on('room_start_game')
 def room_start_game(sid, data):
-    print(f"SocketServer.room_start_game()")
+    print(f"SocketServer.room_start_game()", data)
     if True:
-        game.games_lobbies[data['roomId']] = data['gameId']
-        game.start_game(data['gameId'], lobby.get_lobbies()[data['roomId']], data['roomId'])
+        game.games_lobbies[data['room_id']] = data['game_id']
+        game.start_game(data['game_id'], lobby.get_room(data['room_id']), data['room_id'])
 
-        sio.emit('room_game_start', {'content': 'The game has started!'}, room=data['roomId'])
-        sio.emit('next_round', room=data['gameId'])
+        sio.emit('room_game_start', {'content': 'The game has started!'}, room=data['room_id'])
+        sio.emit('next_round', room=data['game_id'])
         sio.emit('lobby_update', { 'lobbies':lobby.get_lobbies()}, room='lobby')
 
 # Info

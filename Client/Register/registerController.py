@@ -2,10 +2,11 @@ from GUI.screensEnum import ScreensEnum
 
 
 class RegisterController:
-    def __init__(self, model, view, change_scene):
+    def __init__(self, socket, model, view, change_scene):
         self.model = model
         self.view = view
         self.change_scene = change_scene
+        self.socket = socket
 
     def save(self, email):
         try:
